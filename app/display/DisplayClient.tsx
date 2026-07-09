@@ -74,8 +74,10 @@ export function DisplayClient() {
   );
 
   return (
-    <div className="min-h-screen p-8">
-      <div className="mb-6 flex items-end justify-between">
+    // Viewport-locked TV layout: header + tiles take their natural height,
+    // the chart row and list row split the rest — nothing ever scrolls.
+    <div className="grid h-dvh grid-rows-[auto_auto_1fr_1fr] gap-5 overflow-hidden p-6">
+      <div className="flex items-end justify-between">
         <div>
           <div className="flex items-center gap-3">
             {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -108,25 +110,25 @@ export function DisplayClient() {
         ))}
       </div>
 
-      <div className="mt-6 grid grid-cols-1 gap-4 xl:grid-cols-2">
-        <Card title="Signups per week (90 days)">
+      <div className="grid min-h-0 grid-cols-2 gap-4">
+        <Card title="Signups per week (90 days)" className="flex min-h-0 flex-col">
           {series.loading && !series.data ? (
-            <Skeleton className="h-[240px] w-full" />
+            <Skeleton className="h-full w-full" />
           ) : (
-            <TrendChart data={series.data ?? []} xKey="bucket" yKey="signups" name="Signups" colorIndex={0} height={240} />
+            <TrendChart data={series.data ?? []} xKey="bucket" yKey="signups" name="Signups" colorIndex={0} height="100%" />
           )}
         </Card>
-        <Card title="Going per week (90 days)">
+        <Card title="Going per week (90 days)" className="flex min-h-0 flex-col">
           {series.loading && !series.data ? (
-            <Skeleton className="h-[240px] w-full" />
+            <Skeleton className="h-full w-full" />
           ) : (
-            <TrendChart data={series.data ?? []} xKey="bucket" yKey="rsvps" name="Going" colorIndex={1} height={240} />
+            <TrendChart data={series.data ?? []} xKey="bucket" yKey="rsvps" name="Going" colorIndex={1} height="100%" />
           )}
         </Card>
       </div>
 
-      <div className="mt-6 grid grid-cols-1 gap-4 xl:grid-cols-2">
-        <Card title="Top clubs by followers" padded={false}>
+      <div className="grid min-h-0 grid-cols-2 gap-4">
+        <Card title="Top clubs by followers" padded={false} className="flex min-h-0 flex-col overflow-hidden">
           {clubs.loading && !clubs.data ? (
             <div className="p-5"><Skeleton className="h-56 w-full" /></div>
           ) : (
@@ -144,7 +146,7 @@ export function DisplayClient() {
             </ul>
           )}
         </Card>
-        <Card title="Next up on campus" padded={false}>
+        <Card title="Next up on campus" padded={false} className="flex min-h-0 flex-col overflow-hidden">
           {events.loading && !events.data ? (
             <div className="p-5"><Skeleton className="h-56 w-full" /></div>
           ) : (events.data ?? []).length === 0 ? (

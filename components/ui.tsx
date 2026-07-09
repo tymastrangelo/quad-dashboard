@@ -36,7 +36,9 @@ export function Card({
           {action}
         </header>
       )}
-      <div className={padded ? "p-5" : ""}>{children}</div>
+      {/* flex-1/min-h-0 are inert unless the section is flexed via className
+          (Display Mode does this to fill the viewport). */}
+      <div className={`min-h-0 flex-1 ${padded ? "p-5" : ""}`}>{children}</div>
     </section>
   );
 }

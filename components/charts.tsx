@@ -76,7 +76,7 @@ export function TrendChart<T extends Record<string, unknown>>({
   name: string;
   colorIndex?: number;
   bucket?: "day" | "week" | "month";
-  height?: number;
+  height?: number | "100%"; // "100%" fills a flexed Card (Display Mode)
 }) {
   const color = CHART_COLORS[colorIndex];
   const gid = `grad-${yKey}-${colorIndex}`;
@@ -185,40 +185,54 @@ export function MultiTrendChart<T extends Record<string, unknown>>({
   );
 }
 
-// KPI stat tile.
+// KPI stat tile. Compact icon+number row by default; `big` keeps the airy
+// layout for Display Mode's office TV.
 export function StatTile({
   label,
   value,
   icon,
   loading,
-  sub,
   big = false,
 }: {
   label: string;
   value: number | string | undefined;
   icon?: ReactNode;
   loading?: boolean;
-  sub?: ReactNode;
   big?: boolean;
 }) {
-  return (
-    <div className="rounded-card border border-hairline bg-card p-5">
-      <div className="flex items-center justify-between gap-2">
-        <span
-          className={`font-medium uppercase tracking-wide text-subtle ${big ? "text-sm" : "text-xs"}`}
-        >
-          {label}
-        </span>
-        {icon && <span className="text-gold">{icon}</span>}
+  if (big) {
+    return (
+      <div className="rounded-card border border-hairline bg-card p-5">
+        <span className="text-sm font-medium uppercase tracking-wide text-subtle">{label}</span>
+        {loading && value == null ? (
+          <Skeleton className="mt-2 h-12 w-28" />
+        ) : (
+          <p className="mt-1 text-5xl font-bold tabular-nums text-ink">
+            {typeof value === "number" ? fmtNum(value) : (value ?? "—")}
+          </p>
+        )}
       </div>
-      {loading && value == null ? (
-        <Skeleton className={`mt-2 ${big ? "h-12 w-28" : "h-8 w-20"}`} />
-      ) : (
-        <p className={`mt-1 font-bold tabular-nums text-ink ${big ? "text-5xl" : "text-[28px]"}`}>
-          {typeof value === "number" ? fmtNum(value) : (value ?? "—")}
-        </p>
+    );
+  }
+  return (
+    <div className="flex items-center gap-3 rounded-card border border-hairline bg-card px-3.5 py-3">
+      {icon && (
+        <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-gold-light text-[#7a6428]">
+          {icon}
+        </span>
       )}
-      {sub && <div className="mt-1 text-xs text-muted">{sub}</div>}
+      <div className="min-w-0">
+        {loading && value == null ? (
+          <Skeleton className="h-6 w-14" />
+        ) : (
+          <p className="truncate text-xl font-bold leading-6 tabular-nums text-ink">
+            {typeof value === "number" ? fmtNum(value) : (value ?? "—")}
+          </p>
+        )}
+        <p className="truncate text-[10px] font-semibold uppercase tracking-widest text-muted">
+          {label}
+        </p>
+      </div>
     </div>
   );
 }

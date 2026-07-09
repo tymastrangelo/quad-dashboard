@@ -2,15 +2,25 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 
-// SWR-lite: keeps stale data visible while revalidating, optional polling.
+// SWR-lite with a module-level cache: navigating away and back renders the
+// cached data instantly, and the network is only hit again once the entry is
+// older than staleMs (default 5 min) — keeps Supabase request volume down.
+// Manual refresh() and refreshMs polling always fetch (and update the cache).
+// ponytail: no cross-component subscription — each page uses distinct keys;
+// add a subscriber set if two mounted components ever share a key.
+type CacheEntry = { data: unknown; time: number };
+const cache = new Map<string, CacheEntry>();
+const DEFAULT_STALE_MS = 5 * 60_000;
+
 export function useData<T>(
   key: string,
   fetcher: () => Promise<T>,
-  opts?: { refreshMs?: number }
+  opts?: { refreshMs?: number; staleMs?: number }
 ) {
-  const [data, setData] = useState<T | undefined>(undefined);
+  const cached = cache.get(key);
+  const [data, setData] = useState<T | undefined>(cached?.data as T | undefined);
   const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(true); // no data yet
+  const [loading, setLoading] = useState(!cached); // no data yet
   const [refreshing, setRefreshing] = useState(false);
   const fetcherRef = useRef(fetcher);
   fetcherRef.current = fetcher;
@@ -19,6 +29,7 @@ export function useData<T>(
     setRefreshing(true);
     try {
       const result = await fetcherRef.current();
+      cache.set(key, { data: result, time: Date.now() });
       setData(result);
       setError(null);
     } catch (e) {
@@ -27,17 +38,25 @@ export function useData<T>(
       setLoading(false);
       setRefreshing(false);
     }
-  }, []);
+  }, [key]);
 
   useEffect(() => {
-    setLoading(true);
-    load();
+    const entry = cache.get(key);
+    if (entry) {
+      setData(entry.data as T);
+      setLoading(false);
+      // Fresh enough — show as-is, no refetch, no reload flash.
+      if (Date.now() - entry.time >= (opts?.staleMs ?? DEFAULT_STALE_MS)) void load();
+    } else {
+      setData(undefined);
+      setLoading(true);
+      void load();
+    }
     if (opts?.refreshMs) {
       const id = setInterval(load, opts.refreshMs);
       return () => clearInterval(id);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [key, opts?.refreshMs]);
+  }, [key, opts?.refreshMs, opts?.staleMs, load]);
 
   return { data, error, loading, refreshing, refresh: load };
 }
