@@ -193,16 +193,18 @@ export function StatTile({
   icon,
   loading,
   big = false,
+  className = "",
 }: {
   label: string;
   value: number | string | undefined;
   icon?: ReactNode;
   loading?: boolean;
   big?: boolean;
+  className?: string;
 }) {
   if (big) {
     return (
-      <div className="rounded-card border border-hairline bg-card p-5">
+      <div className={`rounded-card border border-hairline bg-card p-5 ${className}`}>
         <span className="text-sm font-medium uppercase tracking-wide text-subtle">{label}</span>
         {loading && value == null ? (
           <Skeleton className="mt-2 h-12 w-28" />
@@ -215,7 +217,7 @@ export function StatTile({
     );
   }
   return (
-    <div className="flex items-center gap-3 rounded-card border border-hairline bg-card px-3.5 py-3">
+    <div className={`flex items-center gap-3 rounded-card border border-hairline bg-card px-3.5 py-3 ${className}`}>
       {icon && (
         <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-gold-light text-[#7a6428]">
           {icon}

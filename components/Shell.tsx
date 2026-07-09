@@ -19,6 +19,7 @@ import {
 } from "react-icons/io5";
 import { createClient } from "@/lib/supabase/client";
 import type { Role } from "@/lib/role";
+import { LiveNotificationsProvider, NotificationBell } from "@/components/LiveNotifications";
 import { Badge } from "@/components/ui";
 
 const NAV = [
@@ -65,6 +66,7 @@ export function Shell({
   };
 
   return (
+    <LiveNotificationsProvider>
     <div className="flex min-h-screen">
       <aside className="fixed inset-y-0 left-0 flex w-60 flex-col border-r border-hairline bg-card">
         <div className="flex items-center gap-2.5 px-5 py-5">
@@ -109,6 +111,7 @@ export function Shell({
 
       <div className="flex min-w-0 flex-1 flex-col pl-60">
         <header className="sticky top-0 z-40 flex h-14 items-center justify-end gap-3 border-b border-hairline bg-card/90 px-6 backdrop-blur">
+          <NotificationBell />
           <Badge tone={role === "super" ? "maroon" : "gold"}>
             {role === "super" ? "Super Admin" : "Elon Admin"}
           </Badge>
@@ -125,5 +128,6 @@ export function Shell({
         <main className="mx-auto w-full max-w-7xl flex-1 p-6">{children}</main>
       </div>
     </div>
+    </LiveNotificationsProvider>
   );
 }

@@ -145,14 +145,16 @@ export default function InsightsPage() {
         </Link>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-4 xl:grid-cols-7">
-        <StatTile label="Users" value={totals.data?.users} loading={totals.loading} icon={<IoPeopleOutline size={18} />} />
-        <StatTile label="Clubs" value={totals.data?.clubs} loading={totals.loading} icon={<IoAlbumsOutline size={18} />} />
-        <StatTile label="Events" value={totals.data?.events} loading={totals.loading} icon={<IoCalendarOutline size={18} />} />
-        <StatTile label="Posts" value={totals.data?.posts} loading={totals.loading} icon={<IoImagesOutline size={18} />} />
-        <StatTile label="Follows" value={totals.data?.follows} loading={totals.loading} icon={<IoHeartOutline size={18} />} />
-        <StatTile label="Going" value={totals.data?.going} loading={totals.loading} icon={<IoCheckmarkCircleOutline size={18} />} />
-        <StatTile label="Invites sent" value={totals.data?.invites} loading={totals.loading} icon={<IoPaperPlaneOutline size={18} />} />
+      {/* Always one row: tiles spread to fill, and the row scrolls sideways
+          instead of wrapping when the screen is too narrow. */}
+      <div className="flex gap-3 overflow-x-auto pb-1">
+        <StatTile className="min-w-40 shrink-0 grow basis-0" label="Users" value={totals.data?.users} loading={totals.loading} icon={<IoPeopleOutline size={18} />} />
+        <StatTile className="min-w-40 shrink-0 grow basis-0" label="Clubs" value={totals.data?.clubs} loading={totals.loading} icon={<IoAlbumsOutline size={18} />} />
+        <StatTile className="min-w-40 shrink-0 grow basis-0" label="Events" value={totals.data?.events} loading={totals.loading} icon={<IoCalendarOutline size={18} />} />
+        <StatTile className="min-w-40 shrink-0 grow basis-0" label="Posts" value={totals.data?.posts} loading={totals.loading} icon={<IoImagesOutline size={18} />} />
+        <StatTile className="min-w-40 shrink-0 grow basis-0" label="Follows" value={totals.data?.follows} loading={totals.loading} icon={<IoHeartOutline size={18} />} />
+        <StatTile className="min-w-40 shrink-0 grow basis-0" label="Going" value={totals.data?.going} loading={totals.loading} icon={<IoCheckmarkCircleOutline size={18} />} />
+        <StatTile className="min-w-40 shrink-0 grow basis-0" label="Invites sent" value={totals.data?.invites} loading={totals.loading} icon={<IoPaperPlaneOutline size={18} />} />
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">

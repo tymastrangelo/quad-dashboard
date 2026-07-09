@@ -8,6 +8,7 @@ import { eventEnd, fmtDateTime, fmtNum } from "@/lib/format";
 import type { Club, EventRow } from "@/lib/types";
 import { useData } from "@/lib/useData";
 import { StatTile, TrendChart } from "@/components/charts";
+import { LiveNotificationsProvider } from "@/components/LiveNotifications";
 import { Card, Skeleton } from "@/components/ui";
 
 const REFRESH_MS = 60_000; // silent revalidation; stale data stays visible
@@ -76,6 +77,8 @@ export function DisplayClient() {
   return (
     // Viewport-locked TV layout: header + tiles take their natural height,
     // the chart row and list row split the rest — nothing ever scrolls.
+    // Live notifications drop in as a top-center banner (see provider below).
+    <LiveNotificationsProvider variant="banner">
     <div className="grid h-dvh grid-rows-[auto_auto_1fr_1fr] gap-5 overflow-hidden p-6">
       <div className="flex items-end justify-between">
         <div>
@@ -170,5 +173,6 @@ export function DisplayClient() {
         </Card>
       </div>
     </div>
+    </LiveNotificationsProvider>
   );
 }
