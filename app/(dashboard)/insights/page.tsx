@@ -145,16 +145,35 @@ export default function InsightsPage() {
         </Link>
       </div>
 
-      {/* Always one row: tiles spread to fill, and the row scrolls sideways
-          instead of wrapping when the screen is too narrow. */}
-      <div className="flex gap-3 overflow-x-auto pb-1">
-        <StatTile className="min-w-40 shrink-0 grow basis-0" label="Users" value={totals.data?.users} loading={totals.loading} icon={<IoPeopleOutline size={18} />} />
-        <StatTile className="min-w-40 shrink-0 grow basis-0" label="Clubs" value={totals.data?.clubs} loading={totals.loading} icon={<IoAlbumsOutline size={18} />} />
-        <StatTile className="min-w-40 shrink-0 grow basis-0" label="Events" value={totals.data?.events} loading={totals.loading} icon={<IoCalendarOutline size={18} />} />
-        <StatTile className="min-w-40 shrink-0 grow basis-0" label="Posts" value={totals.data?.posts} loading={totals.loading} icon={<IoImagesOutline size={18} />} />
-        <StatTile className="min-w-40 shrink-0 grow basis-0" label="Follows" value={totals.data?.follows} loading={totals.loading} icon={<IoHeartOutline size={18} />} />
-        <StatTile className="min-w-40 shrink-0 grow basis-0" label="Going" value={totals.data?.going} loading={totals.loading} icon={<IoCheckmarkCircleOutline size={18} />} />
-        <StatTile className="min-w-40 shrink-0 grow basis-0" label="Invites sent" value={totals.data?.invites} loading={totals.loading} icon={<IoPaperPlaneOutline size={18} />} />
+      {/* Stat pills drift left in a seamless infinite marquee (two identical
+          sets, CSS-only). Hover pauses it; reduced-motion turns it off. */}
+      <div className="overflow-hidden">
+        <div className="marquee-track flex w-max">
+          {[0, 1].map((set) => (
+            <div key={set} aria-hidden={set === 1} className="flex shrink-0 gap-3 pr-3">
+              {(
+                [
+                  { label: "Users", value: totals.data?.users, icon: <IoPeopleOutline size={18} /> },
+                  { label: "Clubs", value: totals.data?.clubs, icon: <IoAlbumsOutline size={18} /> },
+                  { label: "Events", value: totals.data?.events, icon: <IoCalendarOutline size={18} /> },
+                  { label: "Posts", value: totals.data?.posts, icon: <IoImagesOutline size={18} /> },
+                  { label: "Follows", value: totals.data?.follows, icon: <IoHeartOutline size={18} /> },
+                  { label: "Going", value: totals.data?.going, icon: <IoCheckmarkCircleOutline size={18} /> },
+                  { label: "Invites sent", value: totals.data?.invites, icon: <IoPaperPlaneOutline size={18} /> },
+                ] as const
+              ).map((t) => (
+                <StatTile
+                  key={t.label}
+                  className="w-48 shrink-0"
+                  label={t.label}
+                  value={t.value}
+                  loading={totals.loading}
+                  icon={t.icon}
+                />
+              ))}
+            </div>
+          ))}
+        </div>
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">

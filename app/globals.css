@@ -46,3 +46,19 @@ body {
 @keyframes noti-in-down {
   from { opacity: 0; transform: translateY(-8px); }
 }
+
+/* Campus Insights stat-pill marquee: track holds two identical sets, so
+   -50% is one full set width = seamless loop. Plain CSS (not a Tailwind
+   utility) so nothing — including OS reduce-motion — strips it. */
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.marquee-track {
+  animation: marquee 45s linear infinite;
+  will-change: transform;
+}
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
