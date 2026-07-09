@@ -9,6 +9,7 @@ import { useData } from "@/lib/useData";
 import {
   Button,
   Card,
+  ConfirmDialog,
   EmptyState,
   Field,
   Input,
@@ -29,6 +30,7 @@ export default function BroadcastRequestsPage() {
   const [eventId, setEventId] = useState("");
   const [sendAt, setSendAt] = useState("");
   const [busy, setBusy] = useState(false);
+  const [withdrawing, setWithdrawing] = useState<BroadcastRequest | null>(null);
 
   const events = useData("upcoming-events", async () => {
     const { data, error } = await supabase
@@ -133,7 +135,18 @@ export default function BroadcastRequestsPage() {
                 <li key={r.id} className="border-b border-hairline/60 px-5 py-3 last:border-0">
                   <div className="flex items-center justify-between gap-2">
                     <p className="truncate text-sm font-semibold">{r.title}</p>
-                    <StatusBadge status={r.status} />
+                    <span className="flex shrink-0 items-center gap-1.5">
+                      <StatusBadge status={r.status} />
+                      {r.status === "pending" && (
+                        <Button
+                          variant="ghost"
+                          className="!h-7 !px-2 !text-destructive"
+                          onClick={() => setWithdrawing(r)}
+                        >
+                          Withdraw
+                        </Button>
+                      )}
+                    </span>
                   </div>
                   <p className="mt-0.5 line-clamp-2 text-sm text-subtle">{r.body}</p>
                   <p className="mt-1 text-xs text-muted">
@@ -152,6 +165,32 @@ export default function BroadcastRequestsPage() {
           )}
         </Card>
       </div>
+
+      {withdrawing && (
+        <ConfirmDialog
+          title="Withdraw request"
+          message={
+            <>
+              Withdraw <strong>{withdrawing.title}</strong>? The super admin won&apos;t see
+              it anymore. Only pending requests can be withdrawn.
+            </>
+          }
+          actionLabel="Withdraw"
+          onConfirm={async () => {
+            const { data, error } = await supabase
+              .from("broadcast_requests")
+              .delete()
+              .eq("id", withdrawing.id)
+              .select("id");
+            if (error) throw new Error(error.message);
+            if (!data?.length)
+              throw new Error("Nothing was withdrawn — it may have already been reviewed.");
+            toast("Request withdrawn.");
+            requests.refresh();
+          }}
+          onClose={() => setWithdrawing(null)}
+        />
+      )}
     </div>
   );
 }

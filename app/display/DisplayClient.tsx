@@ -77,9 +77,8 @@ export function DisplayClient() {
       <div className="mb-6 flex items-end justify-between">
         <div>
           <div className="flex items-center gap-3">
-            <span className="flex size-11 items-center justify-center rounded-xl bg-maroon text-xl font-bold text-white">
-              Q
-            </span>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/logo.png" alt="Quad" className="size-11 shrink-0 rounded-xl" />
             <h1 className="text-3xl font-bold">Quad · Campus Insights</h1>
           </div>
           <p className="mt-1 text-sm text-muted">

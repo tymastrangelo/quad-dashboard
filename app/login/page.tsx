@@ -32,9 +32,8 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center p-6">
       <div className="w-full max-w-sm">
         <div className="mb-6 flex flex-col items-center gap-3">
-          <span className="flex size-14 items-center justify-center rounded-2xl bg-maroon text-2xl font-bold text-white">
-            Q
-          </span>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logo.png" alt="Quad" className="size-14 shrink-0 rounded-2xl" />
           <div className="text-center">
             <h1 className="text-xl font-bold">Quad Admin</h1>
             <p className="text-sm text-subtle">Sign in with your Quad account</p>

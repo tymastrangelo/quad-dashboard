@@ -39,6 +39,7 @@ export type EventRow = {
   club_id: number | null;
   external_link: string | null;
   rsvps?: { count: number }[];
+  clubs?: { name: string | null } | null;
 };
 
 export type Post = {

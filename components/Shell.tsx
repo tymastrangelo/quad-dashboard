@@ -6,15 +6,16 @@ import type { ReactNode } from "react";
 import {
   IoAlbumsOutline,
   IoAnalyticsOutline,
+  IoCalendarOutline,
   IoKeyOutline,
   IoListOutline,
   IoLogOutOutline,
   IoMegaphoneOutline,
+  IoPeopleCircleOutline,
   IoPeopleOutline,
   IoPulseOutline,
   IoSendOutline,
   IoStatsChartOutline,
-  IoTvOutline,
 } from "react-icons/io5";
 import { createClient } from "@/lib/supabase/client";
 import type { Role } from "@/lib/role";
@@ -25,7 +26,8 @@ const NAV = [
     section: "Insights",
     items: [
       { href: "/insights", label: "Campus Insights", icon: IoStatsChartOutline },
-      { href: "/display", label: "Display Mode", icon: IoTvOutline },
+      { href: "/clubs", label: "Clubs", icon: IoPeopleCircleOutline },
+      { href: "/events", label: "Events", icon: IoCalendarOutline },
       { href: "/broadcasts", label: "Broadcast Requests", icon: IoMegaphoneOutline },
     ],
   },
@@ -66,9 +68,8 @@ export function Shell({
     <div className="flex min-h-screen">
       <aside className="fixed inset-y-0 left-0 flex w-60 flex-col border-r border-hairline bg-card">
         <div className="flex items-center gap-2.5 px-5 py-5">
-          <span className="flex size-9 items-center justify-center rounded-xl bg-maroon text-lg font-bold text-white">
-            Q
-          </span>
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img src="/logo.png" alt="Quad" className="size-9 shrink-0 rounded-xl" />
           <div>
             <p className="text-sm font-bold leading-tight">Quad</p>
             <p className="text-[11px] leading-tight text-muted">Admin Dashboard</p>
