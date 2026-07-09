@@ -38,3 +38,11 @@ body {
 ::placeholder {
   color: var(--color-muted);
 }
+
+/* Live notification fade/slide (corner rises, banner drops) */
+@keyframes noti-in-up {
+  from { opacity: 0; transform: translateY(8px); }
+}
+@keyframes noti-in-down {
+  from { opacity: 0; transform: translateY(-8px); }
+}

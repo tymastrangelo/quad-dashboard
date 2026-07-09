@@ -111,7 +111,7 @@ export function Shell({
 
       <div className="flex min-w-0 flex-1 flex-col pl-60">
         <header className="sticky top-0 z-40 flex h-14 items-center justify-end gap-3 border-b border-hairline bg-card/90 px-6 backdrop-blur">
-          <NotificationBell />
+          <NotificationBell showTest={role === "super"} />
           <Badge tone={role === "super" ? "maroon" : "gold"}>
             {role === "super" ? "Super Admin" : "Elon Admin"}
           </Badge>
