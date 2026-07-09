@@ -91,7 +91,7 @@ export function TrendChart<T extends Record<string, unknown>>({
         </defs>
         <CartesianGrid stroke={GRID} vertical={false} />
         <XAxis
-          dataKey={xKey}
+          dataKey={(d: T) => String(d[xKey])}
           tick={AXIS_TICK}
           tickLine={false}
           axisLine={{ stroke: GRID }}
@@ -112,7 +112,7 @@ export function TrendChart<T extends Record<string, unknown>>({
         />
         <Area
           type="monotone"
-          dataKey={yKey}
+          dataKey={(d: T) => Number(d[yKey])}
           name={name}
           stroke={color}
           strokeWidth={2}
@@ -144,7 +144,7 @@ export function MultiTrendChart<T extends Record<string, unknown>>({
       <LineChart data={data} margin={{ top: 8, right: 8, bottom: 0, left: -14 }}>
         <CartesianGrid stroke={GRID} vertical={false} />
         <XAxis
-          dataKey={xKey}
+          dataKey={(d: T) => String(d[xKey])}
           tick={AXIS_TICK}
           tickLine={false}
           axisLine={{ stroke: GRID }}
@@ -172,7 +172,7 @@ export function MultiTrendChart<T extends Record<string, unknown>>({
           <Line
             key={s.key}
             type="monotone"
-            dataKey={s.key}
+            dataKey={(d: T) => Number(d[s.key])}
             name={s.label}
             stroke={CHART_COLORS[i]}
             strokeWidth={2}
