@@ -8,6 +8,7 @@ import {
   IoAnalyticsOutline,
   IoCalendarOutline,
   IoKeyOutline,
+  IoTodayOutline,
   IoListOutline,
   IoLogOutOutline,
   IoMegaphoneOutline,
@@ -26,6 +27,7 @@ const NAV = [
   {
     section: "Insights",
     items: [
+      { href: "/today", label: "Today at a Glance", icon: IoTodayOutline },
       { href: "/insights", label: "Campus Insights", icon: IoStatsChartOutline },
       { href: "/clubs", label: "Clubs", icon: IoPeopleCircleOutline },
       { href: "/events", label: "Events", icon: IoCalendarOutline },

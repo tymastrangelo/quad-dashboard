@@ -5,5 +5,5 @@ export default async function Home() {
   const auth = await getUserAndRole();
   if (!auth) redirect("/login");
   if (auth.role === "none") redirect("/unauthorized");
-  redirect("/insights");
+  redirect("/today");
 }
