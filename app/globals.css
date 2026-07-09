@@ -1,26 +1,40 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@theme {
+  /* Quad theme — mirrors quad-app/theme.ts */
+  --color-maroon: #73000a;
+  --color-maroon-dark: #5a0008;
+  --color-maroon-light: #f7e6e7;
+  --color-gold: #b59a57;
+  --color-gold-light: #f3edde;
+  --color-canvas: #f6f4f1;
+  --color-card: #ffffff;
+  --color-card-alt: #f9f9f9;
+  --color-hairline: #ece8e3;
+  --color-ink: #222222;
+  --color-subtle: #666666;
+  --color-muted: #888888;
+  --color-field: #f3f3f3;
+  --color-destructive: #ff3b30;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
+  /* Validated chart palette (fixed categorical order, never cycled) */
+  --color-chart-1: #a3252e;
+  --color-chart-2: #96731a;
+  --color-chart-3: #1d6fc2;
+  --color-chart-4: #7c3aed;
+
+  --radius-card: 12px;
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+body {
+  background: var(--color-canvas);
+  color: var(--color-ink);
+  font-family: var(--font-geist-sans), system-ui, sans-serif;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+::placeholder {
+  color: var(--color-muted);
 }
