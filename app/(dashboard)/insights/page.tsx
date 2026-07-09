@@ -9,6 +9,7 @@ import {
   IoDownloadOutline,
   IoHeartOutline,
   IoImagesOutline,
+  IoPaperPlaneOutline,
   IoPeopleOutline,
   IoRefreshOutline,
   IoTvOutline,
@@ -106,11 +107,12 @@ export default function InsightsPage() {
     posts.refresh();
   };
 
-  const charts: { key: "signups" | "rsvps" | "follows" | "events_created"; title: string; colorIndex: number }[] = [
+  const charts: { key: "signups" | "rsvps" | "follows" | "events_created" | "invites"; title: string; colorIndex: number }[] = [
     { key: "signups", title: "Signups", colorIndex: 0 },
-    { key: "rsvps", title: "RSVPs", colorIndex: 1 },
+    { key: "rsvps", title: "Going", colorIndex: 1 },
     { key: "follows", title: "Club follows", colorIndex: 2 },
     { key: "events_created", title: "Events created", colorIndex: 3 },
+    { key: "invites", title: "Event invites sent", colorIndex: 2 },
   ];
 
   return (
@@ -143,13 +145,14 @@ export default function InsightsPage() {
         </Link>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 md:grid-cols-3 xl:grid-cols-6">
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-4 xl:grid-cols-7">
         <StatTile label="Users" value={totals.data?.users} loading={totals.loading} icon={<IoPeopleOutline size={18} />} />
         <StatTile label="Clubs" value={totals.data?.clubs} loading={totals.loading} icon={<IoAlbumsOutline size={18} />} />
         <StatTile label="Events" value={totals.data?.events} loading={totals.loading} icon={<IoCalendarOutline size={18} />} />
         <StatTile label="Posts" value={totals.data?.posts} loading={totals.loading} icon={<IoImagesOutline size={18} />} />
         <StatTile label="Follows" value={totals.data?.follows} loading={totals.loading} icon={<IoHeartOutline size={18} />} />
         <StatTile label="Going" value={totals.data?.going} loading={totals.loading} icon={<IoCheckmarkCircleOutline size={18} />} />
+        <StatTile label="Invites sent" value={totals.data?.invites} loading={totals.loading} icon={<IoPaperPlaneOutline size={18} />} />
       </div>
 
       <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
@@ -204,7 +207,7 @@ export default function InsightsPage() {
         </Card>
 
         <Card
-          title="Top upcoming events by RSVPs"
+          title="Top upcoming events by going count"
           action={
             <Button onClick={() => setTableModal("events")} className="h-8 text-xs">
               View all {events.data?.length ?? ""}

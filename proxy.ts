@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 
 // Session refresh + auth gate for every dashboard route. Role checks (elon vs
 // super) happen server-side in the route layouts; this only guarantees a user.
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   let response = NextResponse.next({ request });
 
   const supabase = createServerClient(

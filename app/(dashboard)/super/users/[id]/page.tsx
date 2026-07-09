@@ -165,15 +165,15 @@ export default function UserDetailPage() {
               )}
             </Card>
 
-            <Card title={`RSVPs (${u.rsvps.length})`} padded={false}>
+            <Card title={`Going (${u.rsvps.length})`} padded={false}>
               {u.rsvps.length === 0 ? (
-                <EmptyState text="No RSVPs." />
+                <EmptyState text="Hasn't marked going on any events." />
               ) : (
                 <ul className="max-h-96 overflow-y-auto">
                   {u.rsvps.map((r) => (
                     <li key={`${r.event_id}-${r.rsvped_at}`} className="border-b border-hairline/60 px-5 py-2.5 last:border-0">
                       <p className="truncate text-sm font-medium">{r.title}</p>
-                      <p className="text-xs text-muted">event {fmtDateTime(r.date)} · rsvped {fmtDate(r.rsvped_at)}</p>
+                      <p className="text-xs text-muted">event {fmtDateTime(r.date)} · marked going {fmtDate(r.rsvped_at)}</p>
                     </li>
                   ))}
                 </ul>
@@ -191,7 +191,7 @@ export default function UserDetailPage() {
               <IoWarningOutline className="mt-0.5 shrink-0 text-destructive" size={18} />
               <span>
                 This permanently deletes <strong>{u.email}</strong> — their profile,
-                RSVPs, posts, follows, and notifications. The user is signed out
+                going responses, posts, follows, and notifications. The user is signed out
                 everywhere and this cannot be undone.
               </span>
             </span>

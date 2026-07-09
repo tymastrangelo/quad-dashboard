@@ -59,7 +59,7 @@ export default function UsersPage() {
                   <th className="px-3 py-2 font-medium">Joined</th>
                   <th className="px-3 py-2 font-medium">Last sign-in</th>
                   <th className="px-3 py-2 text-right font-medium">Follows</th>
-                  <th className="px-3 py-2 text-right font-medium">RSVPs</th>
+                  <th className="px-3 py-2 text-right font-medium">Going</th>
                   <th className="px-3 py-2 text-right font-medium">Admin of</th>
                   <th className="px-5 py-2 font-medium">Roles</th>
                 </tr>

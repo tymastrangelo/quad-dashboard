@@ -26,7 +26,7 @@ Both values come from the Supabase dashboard (Settings → API). Only the publis
 ## How roles work
 
 1. Email + password sign-in against the existing Supabase auth (`/login`).
-2. `middleware.ts` refreshes the session cookie and requires a user for every route.
+2. `proxy.ts` refreshes the session cookie and requires a user for every route.
 3. `app/(dashboard)/layout.tsx` resolves the role server-side via the `is_app_super_admin()` / `is_elon_admin()` RPCs; users with neither role land on a polite `/unauthorized` screen.
 4. `app/(dashboard)/super/layout.tsx` re-verifies super admin server-side for every `/super/*` route.
 5. **The database is the real boundary**: every privileged RPC re-checks the role in SQL (SECURITY DEFINER + `is_app_super_admin()`/`is_elon_admin()` gate), and `anon` has no EXECUTE grant on any dashboard RPC. The UI gates are convenience only.
@@ -52,6 +52,7 @@ All schema changes were applied as migrations through the Supabase MCP (`dashboa
 | `admin_audit_log` | Audit trail. Insert-only from inside SECURITY DEFINER RPCs (client INSERT/UPDATE/DELETE revoked); SELECT policy: super admin only. |
 | `club_submissions` | Club registration requests. The mobile `RegisterClubScreen` always inserted this shape but the table never existed — creating it also fixes that mobile flow. RLS: insert own, read own-or-super, update super. |
 | `broadcast_requests.review_note` (new column) | Reviewer's rejection note, visible to the requesting Elon admin. |
+| `cron_http_requests` | Maps `net.http_post` request ids to the cron job that issued them, so `net._http_response` outcomes are attributable per pipeline. RLS on, no policies — written only by the cron jobs, read only via `get_cron_health()`. |
 
 ### RPCs — Elon-admin gated (`is_elon_admin()` in SQL)
 
@@ -69,7 +70,7 @@ All schema changes were applied as migrations through the Supabase MCP (`dashboa
 | `admin_get_users(p_search, p_limit, p_offset)` | Paginated user directory with email, sign-in info, engagement counts, role flags. Never returns `push_token`. |
 | `admin_get_user_detail(p_user_id)` | Full user detail (memberships, admin roles, RSVPs, `has_push_token` boolean only). |
 | `admin_list_super_admins()` | Read-only super admin list. |
-| `admin_get_cron_health()` | pg_cron jobs + latest run outcome for Ops & Health. |
+| `get_cron_health()` | Ops & Health: per pipeline, cron schedule/status **plus the real HTTP outcome** of each `net.http_post` call (`cron_http_requests` ⋈ `net._http_response`). Supersedes `admin_get_cron_health()`, which only saw the cron layer. |
 | `get_admin_broadcast_sends(p_limit)` | History of immediate broadcasts, reconstructed from `admin_broadcast` notification rows. |
 | `admin_update_club/event/post(id, p_patch jsonb)` | Partial updates; only allowlisted keys present in the patch are applied. Audited. |
 | `admin_delete_club/event/post(id)` | Deletes with explicit cleanup of non-cascading FKs (`notifications.post_id`, orphan `events.club_id`). Audited. |
@@ -91,27 +92,13 @@ All schema changes were applied as migrations through the Supabase MCP (`dashboa
 
 `public.all_users_with_profiles` was a SECURITY DEFINER view granted to `anon` — every user's name/avatar was readable **without authentication**, and as an auto-updatable definer view it allowed RLS-bypassing writes to `profiles`. It is now `security_invoker = true` with anon access revoked; the two mobile screens that use it (SharePost, InviteUsers) run authenticated and see exactly the same rows as before.
 
-## Known production issues found during this build (not fixed — owner action needed)
+## Cron pipeline history (fixed 2026-07-09 — do not re-run old fix SQL)
 
-**All three pg_cron jobs have never succeeded** (100 % failure rate: ~30k failed runs for `send-event-reminders`, ~3k for `process-scheduled-broadcasts`, ~1k for `send-admin-digest`). Two bugs in each stored command: the URL/token contain literal `{braces}` (unsubstituted template placeholders), and `'application/json'` is passed as `net.http_post`'s third positional argument (`params`, which expects JSON). Consequences: event reminders, admin digests, and **scheduled broadcasts are never delivered** — the dashboard's "Schedule" path stores rows that will not send until this is fixed ("Send now" works; it doesn't use cron). Ops & Health surfaces the failing runs live. Fix (run in the SQL editor, once per job, substituting each function slug):
+**All three pg_cron jobs had never succeeded** before 2026-07-09 (~35k failed runs total: literal `{braces}` in the URL/token plus `'application/json'` passed as `net.http_post`'s `params` argument). Fixed by migrations `fix_notification_cron_jobs` and `add_events_club_id_fkey`; the auth header now reads the service-role key from Vault at runtime (`vault.decrypted_secrets`, name `service_role_key`) — **no key is inlined anywhere**.
 
-```sql
-select cron.alter_job(
-  <jobid>,
-  command := $cmd$
-    select net.http_post(
-      url     := 'https://hujewnquwyivlgnbprpc.supabase.co/functions/v1/<function-slug>',
-      body    := '{}'::jsonb,
-      headers := jsonb_build_object(
-        'Authorization', 'Bearer ' || '<service-role-key>',
-        'Content-Type', 'application/json'
-      )
-    ) as request_id;
-  $cmd$
-);
-```
+Since then the jobs were re-issued (migration `cron_http_request_tracking`) with the identical `net.http_post` call wrapped in an insert that records the request id into `cron_http_requests`. This is what lets Ops & Health show the edge function's **actual HTTP outcome** — a cron-layer "succeeded" only means the SQL ran, because `net.http_post` is async and the real result lands in `net._http_response` (retained ~6 h). A weekly `purge-cron-history-weekly` job trims `cron.job_run_details` and `cron_http_requests` to 30 days; the ~35k pre-fix failure rows age out via the same job.
 
-(The service-role key is already stored inside the current broken commands in `cron.job` — reuse it, wrapped in quotes, without the braces.)
+If a job command ever needs editing, start from `select command from cron.job` and preserve both the Vault-based auth header and the `insert into cron_http_requests` wrapper.
 
 Also noted: the mobile `AdminClubSubmissionsScreen` gates on an `app_admins` table that doesn't exist; the dashboard's Submissions tab (super-admin gated) covers that flow, and `approve_club_submission` now exists for the mobile screen too.
 

@@ -7,7 +7,7 @@ import type {
   AdminUserRow,
   BroadcastSend,
   ClubEngagementPoint,
-  CronJob,
+  CronPipeline,
   InsightsPoint,
   InsightsTotals,
   SenderPermissions,
@@ -211,8 +211,11 @@ export async function getAdminBroadcastSends(): Promise<BroadcastSend[]> {
   return unwrap(await supabase.rpc("get_admin_broadcast_sends", { p_limit: 100 }));
 }
 
-export async function adminGetCronHealth(): Promise<CronJob[]> {
-  return unwrap(await supabase.rpc("admin_get_cron_health"));
+// Pipeline health from real HTTP outcomes (net._http_response), not just
+// cron-layer status — net.http_post is async, so "succeeded" in
+// cron.job_run_details only means the SQL ran.
+export async function getCronHealth(): Promise<CronPipeline[]> {
+  return unwrap(await supabase.rpc("get_cron_health"));
 }
 
 // ---- Edge functions (send-notifications actions, admin-delete-user) ----

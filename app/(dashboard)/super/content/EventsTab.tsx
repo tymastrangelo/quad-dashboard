@@ -137,7 +137,7 @@ export function EventsTab() {
             { key: "image", label: "Image URL", kind: "text" },
             { key: "external_link", label: "External link", kind: "text" },
             { key: "is_live", label: "Live now", kind: "boolean" },
-            { key: "rsvps_enabled", label: "RSVPs enabled", kind: "boolean" },
+            { key: "rsvps_enabled", label: "Going enabled", kind: "boolean" },
             { key: "members_only", label: "Members only", kind: "boolean" },
           ]}
           onSave={async (patch) => {
@@ -154,8 +154,8 @@ export function EventsTab() {
           title="Delete event"
           message={
             <>
-              This permanently deletes <strong>{deleting.title}</strong> and its RSVPs,
-              saves, and notifications. This cannot be undone.
+              This permanently deletes <strong>{deleting.title}</strong> and its going
+              responses, saves, and notifications. This cannot be undone.
             </>
           }
           confirmWord="delete"

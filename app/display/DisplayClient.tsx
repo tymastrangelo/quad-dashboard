@@ -68,6 +68,7 @@ export function DisplayClient() {
       { label: "Posts", value: totals.data?.posts },
       { label: "Follows", value: totals.data?.follows },
       { label: "Going", value: totals.data?.going },
+      { label: "Invites sent", value: totals.data?.invites },
     ],
     [totals.data]
   );
@@ -101,7 +102,7 @@ export function DisplayClient() {
         </p>
       </div>
 
-      <div className="grid grid-cols-3 gap-4 xl:grid-cols-6">
+      <div className="grid grid-cols-4 gap-4 xl:grid-cols-7">
         {tiles.map((t) => (
           <StatTile key={t.label} big label={t.label} value={t.value} loading={totals.loading} />
         ))}
@@ -115,11 +116,11 @@ export function DisplayClient() {
             <TrendChart data={series.data ?? []} xKey="bucket" yKey="signups" name="Signups" colorIndex={0} height={240} />
           )}
         </Card>
-        <Card title="RSVPs per week (90 days)">
+        <Card title="Going per week (90 days)">
           {series.loading && !series.data ? (
             <Skeleton className="h-[240px] w-full" />
           ) : (
-            <TrendChart data={series.data ?? []} xKey="bucket" yKey="rsvps" name="RSVPs" colorIndex={1} height={240} />
+            <TrendChart data={series.data ?? []} xKey="bucket" yKey="rsvps" name="Going" colorIndex={1} height={240} />
           )}
         </Card>
       </div>

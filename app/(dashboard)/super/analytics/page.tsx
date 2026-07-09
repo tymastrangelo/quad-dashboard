@@ -64,7 +64,7 @@ export default function AnalyticsPage() {
 
   const GROWTH_LABELS: Record<string, string> = {
     signups: "Signups",
-    rsvps: "RSVPs",
+    rsvps: "Going",
     follows: "Follows",
     posts: "Posts",
   };
@@ -75,8 +75,8 @@ export default function AnalyticsPage() {
         <div className="mr-auto">
           <h1 className="text-xl font-bold">Analytics+</h1>
           <p className="text-sm text-subtle">
-            Deeper trends — activity is derived from RSVPs, posts, likes, comments,
-            follows and saves (no tracking pixel exists).
+            Deeper trends — activity is derived from going responses, posts, likes,
+            comments, follows and saves (no tracking pixel exists).
           </p>
         </div>
         <div className="flex rounded-lg bg-field p-1">
@@ -166,7 +166,7 @@ export default function AnalyticsPage() {
             xKey="bucket"
             series={[
               { key: "follows", label: "New followers" },
-              { key: "rsvps", label: "RSVPs" },
+              { key: "rsvps", label: "Going" },
               { key: "posts", label: "Posts" },
             ]}
             bucket={bucket}

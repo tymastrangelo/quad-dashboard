@@ -126,6 +126,7 @@ export type InsightsTotals = {
   follows: number;
   going: number;
   upcoming_events: number;
+  invites: number;
 };
 
 export type InsightsPoint = {
@@ -135,6 +136,7 @@ export type InsightsPoint = {
   follows: number;
   events_created: number;
   posts: number;
+  invites: number;
 };
 
 export type ActivityPoint = {
@@ -185,14 +187,21 @@ export type AdminUserDetail = {
   rsvps: { event_id: number; title: string; date: string; rsvped_at: string }[];
 };
 
-export type CronJob = {
-  jobid: number;
+export type CronHttpCall = {
+  request_id: number;
+  created: string;
+  status_code: number | null;
+  error_msg: string | null;
+  body: string | null;
+  state: "ok" | "error" | "no_response" | "pending";
+};
+
+export type CronPipeline = {
   jobname: string;
   schedule: string;
   active: boolean;
-  last_start: string | null;
-  last_status: string | null;
-  last_message: string | null;
+  last_run: { status: string; start_time: string; return_message: string | null } | null;
+  http_calls: CronHttpCall[];
 };
 
 export type BroadcastSend = {

@@ -43,7 +43,7 @@ export default function EventsPage() {
         <div className="mr-auto">
           <h1 className="text-xl font-bold">Events</h1>
           <p className="text-sm text-subtle">
-            Every event on Quad with live RSVP counts
+            Every event on Quad with live going counts
           </p>
         </div>
         <Tabs
