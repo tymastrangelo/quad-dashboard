@@ -5,6 +5,7 @@ import { IoAddOutline } from "react-icons/io5";
 import {
   adminAddElonAdmin,
   adminGetUsers,
+  adminListElonAdmins,
   adminListSuperAdmins,
   adminRemoveElonAdmin,
   adminSetAppFlag,
@@ -47,14 +48,7 @@ export default function AccessPage() {
     return data as AppFlag[];
   });
 
-  const elonAdmins = useData("elon-admins", async () => {
-    const { data, error } = await supabase
-      .from("elon_admins")
-      .select("email, created_at")
-      .order("email");
-    if (error) throw new Error(error.message);
-    return data as { email: string; created_at: string }[];
-  });
+  const elonAdmins = useData("elon-admins", adminListElonAdmins);
 
   const superAdmins = useData("super-admins", adminListSuperAdmins);
 
@@ -120,8 +114,15 @@ export default function AccessPage() {
                   <ul>
                     {(elonAdmins.data ?? []).map((a) => (
                       <li key={a.email} className="flex items-center justify-between gap-2 border-b border-hairline/60 px-5 py-2.5 last:border-0">
-                        <span className="min-w-0 truncate text-sm">{a.email}</span>
-                        <span className="flex items-center gap-2">
+                        <span className="min-w-0 flex-1">
+                          <span className="block truncate text-sm font-medium">
+                            {a.full_name ?? a.email}
+                          </span>
+                          {a.full_name && (
+                            <span className="block truncate text-xs text-subtle">{a.email}</span>
+                          )}
+                        </span>
+                        <span className="flex shrink-0 items-center gap-2">
                           <span className="text-xs text-muted">added {fmtDate(a.created_at)}</span>
                           <Button
                             variant="ghost"

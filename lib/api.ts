@@ -115,6 +115,12 @@ export async function adminListSuperAdmins(): Promise<SuperAdminRow[]> {
   return unwrap(await supabase.rpc("admin_list_super_admins"));
 }
 
+export async function adminListElonAdmins(): Promise<
+  { email: string; full_name: string | null; created_at: string }[]
+> {
+  return unwrap(await supabase.rpc("admin_list_elon_admins"));
+}
+
 // ---- Content management (super-gated in SQL) ----
 
 export async function adminUpdateClub(id: number, patch: Record<string, unknown>) {
